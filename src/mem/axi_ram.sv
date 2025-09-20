@@ -45,45 +45,92 @@ module axi_ram #
     parameter PIPELINE_OUTPUT = 0
 )
 (
-    input  wire                   clk,
-    input  wire                   rst,
 
-    input  wire [ID_WIDTH-1:0]    s_axi_awid,
-    input  wire [ADDR_WIDTH-1:0]  s_axi_awaddr,
-    input  wire [7:0]             s_axi_awlen,
-    input  wire [2:0]             s_axi_awsize,
-    input  wire [1:0]             s_axi_awburst,
-    input  wire                   s_axi_awlock,
-    input  wire [3:0]             s_axi_awcache,
-    input  wire [2:0]             s_axi_awprot,
-    input  wire                   s_axi_awvalid,
-    output wire                   s_axi_awready,
-    input  wire [DATA_WIDTH-1:0]  s_axi_wdata,
-    input  wire [STRB_WIDTH-1:0]  s_axi_wstrb,
-    input  wire                   s_axi_wlast,
-    input  wire                   s_axi_wvalid,
-    output wire                   s_axi_wready,
-    output wire [ID_WIDTH-1:0]    s_axi_bid,
-    output wire [1:0]             s_axi_bresp,
-    output wire                   s_axi_bvalid,
-    input  wire                   s_axi_bready,
-    input  wire [ID_WIDTH-1:0]    s_axi_arid,
-    input  wire [ADDR_WIDTH-1:0]  s_axi_araddr,
-    input  wire [7:0]             s_axi_arlen,
-    input  wire [2:0]             s_axi_arsize,
-    input  wire [1:0]             s_axi_arburst,
-    input  wire                   s_axi_arlock,
-    input  wire [3:0]             s_axi_arcache,
-    input  wire [2:0]             s_axi_arprot,
-    input  wire                   s_axi_arvalid,
-    output wire                   s_axi_arready,
-    output wire [ID_WIDTH-1:0]    s_axi_rid,
-    output wire [DATA_WIDTH-1:0]  s_axi_rdata,
-    output wire [1:0]             s_axi_rresp,
-    output wire                   s_axi_rlast,
-    output wire                   s_axi_rvalid,
-    input  wire                   s_axi_rready
+    axi4_if.slave_mp axi4_s
+
 );
+
+    // Локальные сигналы для входов
+    logic                   clk;
+    logic                   rst;
+    logic [ID_WIDTH-1:0]    s_axi_awid;
+    logic [ADDR_WIDTH-1:0]  s_axi_awaddr;
+    logic [7:0]             s_axi_awlen;
+    logic [2:0]             s_axi_awsize;
+    logic [1:0]             s_axi_awburst;
+    logic                   s_axi_awlock;
+    logic [3:0]             s_axi_awcache;
+    logic [2:0]             s_axi_awprot;
+    logic                   s_axi_awvalid;
+    logic [DATA_WIDTH-1:0]  s_axi_wdata;
+    logic [STRB_WIDTH-1:0]  s_axi_wstrb;
+    logic                   s_axi_wlast;
+    logic                   s_axi_wvalid;
+    logic                   s_axi_bready;
+    logic [ID_WIDTH-1:0]    s_axi_arid;
+    logic [ADDR_WIDTH-1:0]  s_axi_araddr;
+    logic [7:0]             s_axi_arlen;
+    logic [2:0]             s_axi_arsize;
+    logic [1:0]             s_axi_arburst;
+    logic                   s_axi_arlock;
+    logic [3:0]             s_axi_arcache;
+    logic [2:0]             s_axi_arprot;
+    logic                   s_axi_arvalid;
+    logic                   s_axi_rready;
+
+    // Локальные сигналы для выходов
+    logic                   s_axi_awready;
+    logic                   s_axi_wready;
+    logic [ID_WIDTH-1:0]    s_axi_bid;
+    logic [1:0]             s_axi_bresp;
+    logic                   s_axi_bvalid;
+    logic                   s_axi_arready;
+    logic [ID_WIDTH-1:0]    s_axi_rid;
+    logic [DATA_WIDTH-1:0]  s_axi_rdata;
+    logic [1:0]             s_axi_rresp;
+    logic                   s_axi_rlast;
+    logic                   s_axi_rvalid;
+
+    // Назначения для входов
+    assign clk            = axi4_s.aclk;
+    assign rst            = axi4_s.aresetn;
+    assign s_axi_awid     = axi4_s.awid;
+    assign s_axi_awaddr   = axi4_s.awaddr;
+    assign s_axi_awlen    = axi4_s.awlen;
+    assign s_axi_awsize   = axi4_s.awsize;
+    assign s_axi_awburst  = axi4_s.awburst;
+    assign s_axi_awlock   = axi4_s.awlock;
+    assign s_axi_awcache  = axi4_s.awcache;
+    assign s_axi_awprot   = axi4_s.awprot;
+    assign s_axi_awvalid  = axi4_s.awvalid;
+    assign s_axi_wdata    = axi4_s.wdata;
+    assign s_axi_wstrb    = axi4_s.wstrb;
+    assign s_axi_wlast    = axi4_s.wlast;
+    assign s_axi_wvalid   = axi4_s.wvalid;
+    assign s_axi_bready   = axi4_s.bready;
+    assign s_axi_arid     = axi4_s.arid;
+    assign s_axi_araddr   = axi4_s.araddr;
+    assign s_axi_arlen    = axi4_s.arlen;
+    assign s_axi_arsize   = axi4_s.arsize;
+    assign s_axi_arburst  = axi4_s.arburst;
+    assign s_axi_arlock   = axi4_s.arlock;
+    assign s_axi_arcache  = axi4_s.arcache;
+    assign s_axi_arprot   = axi4_s.arprot;
+    assign s_axi_arvalid  = axi4_s.arvalid;
+    assign s_axi_rready   = axi4_s.rready;
+
+    // Назначения для выходов
+    assign axi4_s.awready = s_axi_awready;
+    assign axi4_s.wready  = s_axi_wready;
+    assign axi4_s.bid     = s_axi_bid;
+    assign axi4_s.bresp   = s_axi_bresp;
+    assign axi4_s.bvalid  = s_axi_bvalid;
+    assign axi4_s.arready = s_axi_arready;
+    assign axi4_s.rid     = s_axi_rid;
+    assign axi4_s.rdata   = s_axi_rdata;
+    assign axi4_s.rresp   = s_axi_rresp;
+    assign axi4_s.rlast   = s_axi_rlast;
+    assign axi4_s.rvalid  = s_axi_rvalid;
 
 parameter VALID_ADDR_WIDTH = ADDR_WIDTH - $clog2(STRB_WIDTH);
 parameter WORD_WIDTH = STRB_WIDTH;
@@ -371,3 +418,4 @@ end
 endmodule
 
 `resetall
+
