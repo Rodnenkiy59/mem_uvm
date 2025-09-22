@@ -5,15 +5,15 @@ import uvm_pkg::*;
   class my_agent extends uvm_agent;
     `uvm_component_utils(my_agent)
     
-    my_driver driver;
-    uvm_sequencer#(my_transaction) sequencer;
+    my_driver #(my_transaction) driver;
+    uvm_sequencer #(my_transaction) sequencer;
     
     function new(string name, uvm_component parent);
       super.new(name, parent);
     endfunction
     
     function void build_phase(uvm_phase phase);
-      driver = my_driver ::type_id::create("driver", this);
+      driver = writeDriver ::type_id::create("driver", this);
       sequencer =
         uvm_sequencer#(my_transaction)::type_id::create("sequencer", this);
     endfunction    

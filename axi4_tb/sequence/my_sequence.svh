@@ -4,7 +4,6 @@ class my_transaction extends uvm_sequence_item;
 
   `uvm_object_utils(my_transaction)
 
-  rand bit cmd;
   rand int addr;
   rand int data;
 
@@ -33,12 +32,6 @@ class my_sequence extends uvm_sequence#(my_transaction);
       if (!req.randomize()) begin
         `uvm_error("MY_SEQUENCE", "Randomize failed.");
       end
-
-      // If using ModelSim, which does not support randomize(),
-      // we must randomize item using traditional methods, like
-      // req.cmd = $urandom;
-      // req.addr = $urandom_range(0, 255);
-      // req.data = $urandom_range(0, 255);
 
       finish_item(req);
     end
