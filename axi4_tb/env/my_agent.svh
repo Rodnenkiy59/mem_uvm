@@ -5,8 +5,11 @@ import uvm_pkg::*;
   class my_agent extends uvm_agent;
     `uvm_component_utils(my_agent)
     
-    my_driver #(my_transaction) driver;
-    uvm_sequencer #(my_transaction) sequencer;
+    // my_driver #(my_transaction) driver;
+    // my_driver #(increment_transaction) driver;
+    writeDriver driver;
+    // uvm_sequencer #(my_transaction) sequencer;
+    uvm_sequencer #(increment_transaction) sequencer;
     
     function new(string name, uvm_component parent);
       super.new(name, parent);
@@ -15,7 +18,8 @@ import uvm_pkg::*;
     function void build_phase(uvm_phase phase);
       driver = writeDriver ::type_id::create("driver", this);
       sequencer =
-        uvm_sequencer#(my_transaction)::type_id::create("sequencer", this);
+        uvm_sequencer#(increment_transaction)::type_id::create("sequencer", this);
+        // uvm_sequencer#(my_transaction)::type_id::create("sequencer", this);
     endfunction    
     
     // In UVM connect phase, we connect the sequencer to the driver.
@@ -27,8 +31,9 @@ import uvm_pkg::*;
       // We raise objection to keep the test from completing
       phase.raise_objection(this);
       begin
-        my_sequence seq;
-        seq = my_sequence::type_id::create("seq");
+        increment_sequence seq;
+        // seq = my_sequence::type_id::create("seq");
+        seq = increment_sequence::type_id::create("seq");
         seq.start(sequencer);
       end
       // We drop objection to allow the test to complete
